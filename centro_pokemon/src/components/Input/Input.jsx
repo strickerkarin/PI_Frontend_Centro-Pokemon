@@ -1,49 +1,60 @@
-import React, { useState, useContext } from "react";
-import ContextoFormulario from "../../context/ContextoFormulario";
+import React, { useState, useContext, useRef, useEffect } from "react";
+import { ContextoFormulario } from "../../context/ContextoFormulario";
+import propTypes from "prop-types";
 
-const Input = ({ name, label, type = "text" }) => {
-  // Aqui deberíamos acceder al estado global para poder obtener los datos
-  // del formulario y una manera de actualizar los mismos.
-  const {
-    handleNombreEntrenador,
-    handleApellidoEntrenador,
-    handleEmailEntrenador,
-    handleNombrePokemon,
-  } = useContext(ContextoFormulario);
+/**
+ * @description Componente que gestiona los inputs del formulario
+ * @author Karin Stricker
+ * @param {{
+ * nombre: string,
+ *  label: string,
+ * type: string,
+ * shouldFocus: boolean,
+ * isPokemon: boolean,
+ * }} props
+ * @returns {JSX.Element}
+ */
 
-  // También, utilizaremos un estado local para manejar el estado del input.
-  const [value, setValue] = useState("");
+const Input = ({
+  name,
+  label,
+  type = "text",
+  shouldFocus = false,
+  isPokemon = false,
+}) => {
+  const ref = useRef();
+
+  const { state, dispatch } = useContext(ContextoFormulario);
+
+  const [value, setValue] = useState(state[name] || "");
+
+  /**
+   * @description Función que se ejecuta al cambiar el valor del input
+   * @param {Event} e
+   */
 
   const onChange = (e) => {
-    // Aquí deberíamos actualizar el estado local del input.
-    const valor = e.target.value;
-    setValue(valor);
+    setValue(e.target.value);
   };
+
+  /**
+   * Función que se ejecuta al perder el foco el input
+   * @param {Event} e
+   */
 
   const onBlur = (e) => {
     e.preventDefault();
-
-    // Aqui deberíamos actualizar el estado global con los datos de
-    // cada input.
-    switch (name) {
-      case "nombre":
-        handleNombreEntrenador(value);
-        break;
-      case "apellido":
-        handleApellidoEntrenador(value);
-        break;
-      case "email":
-        handleEmailEntrenador(value);
-        break;
-      case "nombrePokemon":
-        handleNombrePokemon(value);
-        break;
-      default:
-        break;
-    }
-    // TIP: Podemos utilizar el nombre de cada input para guardar
-    // los datos en el estado global usando una notación de { clave: valor }
+    dispatch({
+      type: isPokemon ? "ACTUALIZAR_POKEMON" : "ACTUALIZAR_ENTRENADOR",
+      payload: { name, valor: value },
+    });
   };
+
+  useEffect(() => {
+    if (ref.current && shouldFocus) {
+      ref.current.focus();
+    }
+  }, [shouldFocus]);
 
   return (
     <div className="input-contenedor">
@@ -54,9 +65,18 @@ const Input = ({ name, label, type = "text" }) => {
         id={name}
         onChange={onChange}
         onBlur={onBlur}
+        ref={ref}
       />
     </div>
   );
+};
+
+Input.propTypes = {
+  name: propTypes.string.isRequired,
+  label: propTypes.string.isRequired,
+  type: propTypes.string,
+  shouldFocus: propTypes.bool,
+  isPokemon: propTypes.bool,
 };
 
 export default Input;
