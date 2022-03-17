@@ -2,6 +2,27 @@ import React, { useContext } from "react";
 import { ContextoFormulario } from "../../context/ContextoFormulario";
 
 /**
+ * Esta función se encarga de enviar el formulario al servidor
+ * @param {*} data 
+ * @returns 
+ */
+
+const enviarFormulario = async (data) => {
+  const response = await fetch("https://jsonplaceholder.typicode.com/todos", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (response.ok) {
+    alert("Solicitud enviada :)");
+    return await response.json();
+  }
+};
+
+/**
  * @description Componente que muestra el detalle del formulario con los datos de cada uno de los campos que fue completado
  * @returns {JSX.Element}
  */
@@ -52,7 +73,7 @@ const Detalle = () => {
       </section>
       <button
         className="boton-enviar"
-        onClick={() => alert("Solicitud enviada :)")}
+        onClick={() => enviarFormulario(state)}
       >
         Enviar Solicitud
       </button>

@@ -6,6 +6,14 @@ import pikachu from "../../assets/pikachu.png";
 import Input from "../Input/Input";
 import Detalle from "./Detalle";
 import { ProviderFormulario } from "../../context/ContextoFormulario";
+import { useQuery } from "react-query";
+import Select from "../Select/Select";
+
+const getPokemonTypes = async () => {
+  const response = await fetch("https://pokeapi.co/api/v2/type/");
+  const data = await response.json();
+  return data.results;
+};
 
 /**
  * @description Componente que muestra los inputs del formulario.
@@ -13,6 +21,12 @@ import { ProviderFormulario } from "../../context/ContextoFormulario";
  */
 
 const Formulario = () => {
+  const {
+    data: tipos,
+    isLoading,
+    isError,
+  } = useQuery("pokemonTypes", getPokemonTypes);
+
   return (
     <>
       <header className="form-header">
@@ -48,7 +62,12 @@ const Formulario = () => {
                   <span>POKEMON</span>
                 </p>
                 <Input name="nombrePokemon" label="Nombre" isPokemon={true} />
-                <Input name="tipoPokemon" label="Tipo" isPokemon={true} />
+                <Select
+                  name="tipoPokemon"
+                  label="Tipo"
+                  options={tipos}
+                  disabled={isLoading || isError} 
+                />               
                 <Input
                   name="elementoPokemon"
                   label="Elemento"

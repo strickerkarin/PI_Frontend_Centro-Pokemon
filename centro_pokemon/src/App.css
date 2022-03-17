@@ -17,9 +17,14 @@ body {
   letter-spacing: 4px;
 }
 
+select {
+  background-color: white;
+}
+
 .App {
   text-align: center;
   height: 100vh;
+  padding-bottom: 20rem;
 }
 
 a {
@@ -103,7 +108,8 @@ h1 {
   width: 100%;
 }
 
-.input-contenedor input {
+.input-contenedor input,
+.input-contenedor select {
   padding: 1rem;
   width: 300px;
   border-radius: 10px;
@@ -111,10 +117,13 @@ h1 {
   margin-left: 1rem;
 }
 
+.input-contenedor select {
+  width: 338px;
+}
+
 .formulario-ingreso .cuerpo-formulario {
   display: flex;
   flex-direction: row;
-  height: 90%;
 }
 
 .formulario-ingreso h3 {
